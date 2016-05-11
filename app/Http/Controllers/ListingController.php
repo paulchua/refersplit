@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 
 class ListingController extends Controller {
     /**
-    * Responds to requests to GET /books
+    * Responds to requests to GET /listings
     */
     public function getIndex() {
     
@@ -34,16 +34,8 @@ class ListingController extends Controller {
      * Responds to requests to GET /books/create
      */
     public function getCreate() {
-        // if(!\Auth::check()) {
-        //     \Session::flash('message','You have to be logged in to create a new book.');
-        //     return redirect('/');
-        // }
-        $authors_for_dropdown = \App\Author::authorsForDropdown();
-        $tags_for_checkboxes = \App\Tag::getTagsForCheckboxes();
-        return view('books.create')->with([
-            'authors_for_dropdown' => $authors_for_dropdown,
-            'tags_for_checkboxes' => $tags_for_checkboxes,
-        ]);
+
+        return view('listings.create');
     }
     /**
      * Responds to requests to POST /book/create
@@ -53,34 +45,23 @@ class ListingController extends Controller {
             'not_in' => 'You have to choose an author.',
         ];
         $this->validate($request,[
-            'title' => 'required|min:3',
-            'published' => 'required|min:4',
-            'cover' => 'required|url',
-            'purchase_link' => 'required|url',
-            'author_id' => 'not_in:0'
+            'title' => 'required|min:1',
+            'description' => 'required|min:10'
         ],$messages);
-        # Add the book (this was how we did it pre-mass assignment)
-        // $book = new \App\Book();
-        // $book->title = $request->title;
-        // $book->author = $request->author;
-        // $book->published = $request->published;
-        // $book->cover = $request->cover;
-        // $book->purchase_link = $request->purchase_link;
-        // $book->save();
-        # Mass Assignment
-        $data = $request->only('title','author_id','published','cover','purchase_link');
+      
+        $data = $request->only('title','description');
         $data['user_id'] = \Auth::id();
         # One way to add the data
         #$book = new \App\Book($data);
         #$book->save();
         # An alternative way to add the data
-        $book = \App\Book::create($data);
+        $listing = \App\Listing::create($data);
         # Save Tags
-        $tags = ($request->tags) ?: [];
-        $book->tags()->sync($tags);
-        $book->save();
-        \Session::flash('message','Your book was added');
-        return redirect('/books');
+        #$tags = ($request->tags) ?: [];
+        #$listing->tags()->sync($tags);
+        #$listing->save();
+        \Session::flash('message','Your listing was added');
+        return redirect('/listings');
     }
     /**
 	* Responds to requests to GET /book/edit/{id?}
