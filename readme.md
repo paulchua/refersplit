@@ -10,7 +10,7 @@ http://p4.paulchua.xyz
 
 ## URL to the demo video
 
-http://xxxxxx
+https://www.youtube.com/watch?v=zBCoFhqJ-Mo&feature=youtu.be
 
 ## P4 Planning Doc (editable)
 
